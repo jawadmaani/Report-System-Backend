@@ -35,7 +35,7 @@ public class ReportService
 
     }
     
-    public async Task <List<DtoReportResponse>> GetAll()
+    public async Task <List<DtoReportResponse>> GetAllReports()
     {
         var reports = await repository.GetAllAsync();
         if (reports is null || !reports.Any())
@@ -55,6 +55,48 @@ public class ReportService
         return dtoReports.ToList();
 
     }
+
+    public async Task<DtoReportResponse> GetReportById(int id)
+    {
+        var report = await repository.GetByIdAsync(id);
+        if (report is null)
+        {
+            throw new EmptyDatabaseFromReports($"No report found with ID {id}");
+
+        }
+        var dtoReport = new DtoReportResponse
+        {
+            Id = report.Id,
+            Title = report.Title,
+            Location = report.Location,
+            Description = report.Description,
+            Importance = report.Importance,
+            Type = report.Type,
+            CreatedAt = report.CreatedAt,
+        };
+        return dtoReport;
+    }
+
+    
+    public async Task<String> DeleteReport(int id)
+    {
+        var report = await repository.GetByIdAsync(id);
+        if (report is null)
+        {
+            throw new EmptyDatabaseFromReports($"No report found with ID {id}");
+        }
+
+        await repository.DeleteAsync(id);
+        await repository.SaveAsync();
+        return $"Report with ID {id} deleted successfully";
+    }
+
+    // public async Task<DtoReportResponse> UpdateReport(DtoReportRequest dtoReportRequest)
+    // {
+    //     
+    // }
+    
+    
     
     
 
