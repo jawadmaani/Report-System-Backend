@@ -39,6 +39,7 @@ public class ReportController:ControllerBase
         return Ok(reports);
         
     }
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<DtoReportResponse>> GetReportById(int id)
     {
