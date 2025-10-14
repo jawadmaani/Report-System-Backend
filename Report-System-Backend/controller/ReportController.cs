@@ -45,5 +45,14 @@ public class ReportController:ControllerBase
         var report = await reportService.GetReportById(id);
         return Ok(report);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<DtoReportResponse>> UpdateReport(int id, DtoReportRequest dtoReportRequest)
+    {
+        var report = await reportService.UpdateReport(id, dtoReportRequest);
+        return Ok(report);
+    }
+    
+    
     
 }

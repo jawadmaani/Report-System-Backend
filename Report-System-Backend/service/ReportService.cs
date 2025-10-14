@@ -91,10 +91,37 @@ public class ReportService
         return $"Report with ID {id} deleted successfully";
     }
 
-    // public async Task<DtoReportResponse> UpdateReport(DtoReportRequest dtoReportRequest)
-    // {
-    //     
-    // }
+    public async Task<DtoReportResponse> UpdateReport(int id,DtoReportRequest dtoReportRequest)
+    {
+        var report = await repository.GetByIdAsync(id);
+        if (report is null)
+        {
+            throw new EmptyDatabaseFromReports($"No report found with ID {id}");
+
+        }
+        report.Title = dtoReportRequest.Title;
+        report.Location = dtoReportRequest.Location;
+        report.Description = dtoReportRequest.Description;
+        report.Importance = dtoReportRequest.Importance;
+        report.Type = dtoReportRequest.Type;
+
+        await repository.UpdateAsync(report);
+        await repository.SaveAsync();
+        
+        var dtoReport = new DtoReportResponse
+        {
+            Id = report.Id,
+            Title = report.Title,
+            Location = report.Location,
+            Description = report.Description,
+            Importance = report.Importance,
+            Type = report.Type,
+            CreatedAt = report.CreatedAt,
+        };
+        return dtoReport;
+
+
+    }
     
     
     
