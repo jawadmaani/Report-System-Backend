@@ -24,7 +24,6 @@ public class Report
     [Required]
     public ReportType Type { get; set; }
     
-    public DateTime CreatedAt { get; private set; }
-    
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;    
     
 }

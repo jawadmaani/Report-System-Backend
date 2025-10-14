@@ -11,7 +11,8 @@ namespace Report_System_Backend.model
         [Required]
         [Range(-180, 180)]
         public double Lng { get; set; }
-        
+        public Location() { }
+
         public Location(double lat, double lng)
         {
             Lat = lat;

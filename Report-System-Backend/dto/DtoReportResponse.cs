@@ -11,4 +11,6 @@ public class DtoReportResponse
     public ReportImportance Importance { get; set; }
     public ReportType Type { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    
 }
