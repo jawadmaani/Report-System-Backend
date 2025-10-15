@@ -9,7 +9,7 @@ public class DtoReportRequest
     [StringLength(100,MinimumLength = 1)]
     public String Title { get; set; }
     [Required]
-    public Location Location { get; set; }
+    public DtoLocation Location { get; set; }
     [StringLength(1000,MinimumLength = 1)]
     public string Description { get; set; }
     [Required]
