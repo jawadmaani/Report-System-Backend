@@ -1,5 +1,6 @@
 ﻿using Report_System_Backend.dto;
 using Report_System_Backend.exception;
+using Report_System_Backend.Mapper;
 using Report_System_Backend.model;
 using Report_System_Backend.Repository;
 
@@ -16,13 +17,12 @@ public class ReportService
         this.repository = repository;
 
     }
-
-    public async Task<String>  CreateReport(DtoReportRequest dtoReportRequest)
+    public async Task<String> CreateReport(DtoReportRequest dtoReportRequest)
     {
         var report = new Report
         {
             Title = dtoReportRequest.Title,
-            Location = dtoReportRequest.Location,
+            Location = new Location(dtoReportRequest.Location.Lat, dtoReportRequest.Location.Lng),
             Description = dtoReportRequest.Description,
             Importance = dtoReportRequest.Importance,
             Type = dtoReportRequest.Type,
@@ -31,10 +31,7 @@ public class ReportService
             await repository.SaveAsync();
 
             return "Report created successfully";
-
-
     }
-    
     public async Task <List<DtoReportResponse>> GetAllReports()
     {
         var reports = await repository.GetAllAsync();
@@ -42,20 +39,9 @@ public class ReportService
         {
             throw new EmptyDatabaseFromReports("No reports found in the database");
         }
-        var dtoReports = reports.Select(report => new DtoReportResponse
-        {
-            Id = report.Id,
-            Title = report.Title,
-            Location =report.Location,
-            Description = report.Description,
-            Importance = report.Importance,
-            Type = report.Type,
-            CreatedAt = report.CreatedAt,
-        });
-        return dtoReports.ToList();
 
+        return ReportMapper.ToDtoList(reports);
     }
-
     public async Task<DtoReportResponse> GetReportById(int id)
     {
         var report = await repository.GetByIdAsync(id);
@@ -64,19 +50,9 @@ public class ReportService
             throw new EmptyDatabaseFromReports($"No report found with ID {id}");
 
         }
-        var dtoReport = new DtoReportResponse
-        {
-            Id = report.Id,
-            Title = report.Title,
-            Location = report.Location,
-            Description = report.Description,
-            Importance = report.Importance,
-            Type = report.Type,
-            CreatedAt = report.CreatedAt,
-        };
-        return dtoReport;
-    }
 
+        return ReportMapper.ToDto(report);
+    }
     
     public async Task<String> DeleteReport(int id)
     {
@@ -90,7 +66,6 @@ public class ReportService
         await repository.SaveAsync();
         return $"Report with ID {id} deleted successfully";
     }
-
     public async Task<DtoReportResponse> UpdateReport(int id,DtoReportRequest dtoReportRequest)
     {
         var report = await repository.GetByIdAsync(id);
@@ -100,33 +75,16 @@ public class ReportService
 
         }
         report.Title = dtoReportRequest.Title;
-        report.Location = dtoReportRequest.Location;
+        report.Location = new Location(dtoReportRequest.Location.Lat,dtoReportRequest.Location.Lng);
         report.Description = dtoReportRequest.Description;
         report.Importance = dtoReportRequest.Importance;
         report.Type = dtoReportRequest.Type;
 
         await repository.UpdateAsync(report);
         await repository.SaveAsync();
-        
-        var dtoReport = new DtoReportResponse
-        {
-            Id = report.Id,
-            Title = report.Title,
-            Location = report.Location,
-            Description = report.Description,
-            Importance = report.Importance,
-            Type = report.Type,
-            CreatedAt = report.CreatedAt,
-        };
-        return dtoReport;
+
+        return ReportMapper.ToDto(report);
 
 
     }
-    
-    
-    
-    
-
-
-
 }
